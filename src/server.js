@@ -1,40 +1,36 @@
 const http = require('http');
 const url = require('url');
+//const query = require('querystring');
 
 // access handlers
-const htmlHandler = require('./htmlResponses.js');
-const jsonHandler = require('./jsonResponses.js');
-const { parse } = require('path');
+const responseHandler = require('./responses.js');
 
 // access port
-const port = proces.env.PORT || process.env.NODE_PORT || 3000;
-
+const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 // create url struct
 const urlStruct = {
-    '/': htmlHandler.getIndex,
+  '/': responseHandler.getIndex,
+  '/success': responseHandler.success,
+  index: responseHandler.getIndex,
 };
-
 
 const onRequest = (request, response) => {
-    console.log(request);
+  console.log(request);
+  // parse the url
+  const parsedUrl = url.parse(request.url);
 
-    // parse the url
-    const parsedUrl = url.parse(request.url);
+  const acceptedTypes = request.headers.accept.split(',');
 
-
-    // check if it matches any of the predetermined page names
-    if (urlStruct[parsedUrl.pathname]) {
-        urlStruct[parsedUrl.pathname](request, response)
-    } else {
-
-    };
-
+  // check if it matches any of the predetermined page names
+  if (urlStruct[parsedUrl.pathname]) {
+    urlStruct[parsedUrl.pathname](request, response, acceptedTypes);
+  } else {
+    urlStruct.index(request, response, acceptedTypes);
+  }
 };
-
-
 
 // create the server
 http.createServer(onRequest).listen(port, () => {
-    console.log(`Server Started on 127.0.01:${port}`);
-})
+  console.log(`Listening on 127.0.01:${port}`);
+});
