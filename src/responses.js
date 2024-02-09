@@ -3,6 +3,7 @@ const fs = require('fs');
 
 // load in the index (client file)
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
+const css = fs.readFileSync(`${__dirname}/../client/style.css`);
 
 // response function
 const respond = (request, response, content, type) => {
@@ -26,6 +27,13 @@ const getIndex = (request, response) => {
   respond(request, response, index, 'text/html');
 };
 
+// getting the css page
+const getCSS = (request, response) => {
+  response.writeHead(200, {'Content-Type': 'text/css'});
+  response.write(css);
+  response.end();
+}
+
 // status messages
 
 // success
@@ -38,11 +46,13 @@ const success = (request, response) => {
 };
 
 // // bad request, 400 if missing 'valid' query and 200 if it has it
-// const badRequest = (request, response) => {
-//   const respondJSON = {
-//     message: '',
-//   };
-// };
+const badRequest = (request, response) => {
+  const respondJSON = {
+    message: 'this was a bad request',
+  };
+
+  respondJSON(request, response, 400, responseJSON);
+};
 
 // unauthorized (401 status code if missing 'loggedIn' query, and 200 if it has it)
 
@@ -55,4 +65,6 @@ const success = (request, response) => {
 module.exports = {
   getIndex,
   success,
+  getCSS,
+  badRequest,
 };

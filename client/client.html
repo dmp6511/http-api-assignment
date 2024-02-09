@@ -1,13 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Our simple HTTP server</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
-  
+
   <script>
 
+    const init = () => {
+      // getting button values
+      const sendButton = document.querySelector("#send");
+      const selectPage = document.querySelector('#page');
+      const selectType = document.querySelector('#type');
+
+    };
+
+    const handleResponse = (response) => {
+      
+    };
+
+    // sending fetch request function
+    const sendFetchRequest = (url, acceptedType) => {
+
+      const options = {
+        method: 'GET',
+        headers: { 'Accept': acceptedType },
+      }
+
+      // fetch the data
+      const fetchPromise = fetch(url, options);
+
+      fetchPromise.then((response) => { handleResponse(response) })
+    };
+
+    window.onload = init;
   </script>
 </head>
+
 <body>
   <section id="top">
     <h3>Status Code Tests</h3>
@@ -29,4 +58,5 @@
   <section id="content">
   </section>
 </body>
+
 </html>
