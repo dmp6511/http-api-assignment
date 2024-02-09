@@ -7,16 +7,46 @@
 
   <script>
 
-    const init = () => {
-      // getting button values
-      const sendButton = document.querySelector("#send");
-      const selectPage = document.querySelector('#page');
-      const selectType = document.querySelector('#type');
 
-    };
 
+    // handling the response
     const handleResponse = (response) => {
-      
+      response.text().then((resText) => {
+
+        // grabbing the content and its type
+        const contentType = response.headers.get('Content-Type');
+        const content = document.querySelector('#content');
+        content.appendChild(document.createElement('hr'));
+
+        // dom elements to use
+        const p = document.createElement('p');
+        const h1 = document.createElement('h1');
+        const h2 = document.createElement('h2');
+        const rawData = document.createElement('p');
+
+        h1.textContent = contentType;
+        rawData.textContent = resText;
+
+
+        // content if conditions
+
+        // if json
+        if (contentType === 'application/json') {
+          // parse and display
+          const parsedResponse = JSON.parse(resText);
+          h1.textContent = "JSON";
+          h2.textContent = `${parsedResponse.message}`;
+        } else if (contentType === 'text/xml') {
+          const parsedResponse = new window.DOMParser().parseFromString(resText, 'text/xml');
+          h1.textContent = 'XML';
+          h2.textContent = `${parsedResponse.message}`;
+        }
+
+
+        content.appendChild(h1);
+        content.appendChild(h2);
+        content.appendChild(rawData);
+      })
     };
 
     // sending fetch request function
@@ -31,6 +61,27 @@
       const fetchPromise = fetch(url, options);
 
       fetchPromise.then((response) => { handleResponse(response) })
+    };
+
+
+    const init = () => {
+      // getting button values
+      const sendButton = document.querySelector("#send");
+      const selectPage = document.querySelector('#page');
+      const selectType = document.querySelector('#type');
+
+
+      sendJSON = () => sendFetchRequest('/success', 'application/json')
+      sendXML = () => sendFetchRequest('/success', 'text/xml');
+
+
+      sendButton.addEventListener('click', () => {
+        if (selectType.value === "XML") {
+          sendXML();
+        } else {
+          sendJSON();
+        }
+      });
     };
 
     window.onload = init;

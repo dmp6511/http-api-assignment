@@ -1,6 +1,6 @@
 const http = require('http');
 const url = require('url');
-const query = require('querystring');
+// const query = require('querystring');
 
 // access handlers
 const responseHandler = require('./responses.js');
@@ -13,13 +13,14 @@ const urlStruct = {
   '/': responseHandler.getIndex,
   '/style.css': responseHandler.getCSS,
   '/success': responseHandler.success,
+  '/badrequest': responseHandler.badRequest,
   index: responseHandler.getIndex,
 };
 
 const onRequest = (request, response) => {
   console.log(request);
   // parse the url
-  const parsedUrl = new URL(request.url);
+  const parsedUrl = url.parse(request.url);
 
   const acceptedTypes = request.headers.accept.split(',');
 

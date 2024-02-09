@@ -29,10 +29,10 @@ const getIndex = (request, response) => {
 
 // getting the css page
 const getCSS = (request, response) => {
-  response.writeHead(200, {'Content-Type': 'text/css'});
+  response.writeHead(200, { 'Content-Type': 'text/css' });
   response.write(css);
   response.end();
-}
+};
 
 // status messages
 
@@ -47,7 +47,7 @@ const success = (request, response) => {
 
 // // bad request, 400 if missing 'valid' query and 200 if it has it
 const badRequest = (request, response) => {
-  const respondJSON = {
+  const responseJSON = {
     message: 'this was a bad request',
   };
 
