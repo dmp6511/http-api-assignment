@@ -33,19 +33,21 @@
         // if json
         if (contentType === 'application/json') {
           // parse and display
-          const parsedResponse = JSON.parse(resText);
+          let parsedResponse = JSON.parse(resText);
           h1.textContent = "JSON";
           h2.textContent = `${parsedResponse.message}`;
         } else if (contentType === 'text/xml') {
-          const parsedResponse = new window.DOMParser().parseFromString(resText, 'text/xml');
+          let parsedResponse = new window.DOMParser().parseFromString(resText, 'text/xml');
           h1.textContent = 'XML';
-          h2.textContent = `${parsedResponse.message}`;
+          h2.textContent = `<message> ${parsedResponse.message} </message>`;
         }
 
 
         content.appendChild(h1);
         content.appendChild(h2);
         content.appendChild(rawData);
+
+        console.log(resText);
       })
     };
 
@@ -56,6 +58,7 @@
         method: 'GET',
         headers: { 'Accept': acceptedType },
       }
+
 
       // fetch the data
       const fetchPromise = fetch(url, options);
@@ -71,15 +74,21 @@
       const selectType = document.querySelector('#type');
 
 
+      selectPage.onchange = () => {
+        console.log(selectPage.value);
+      };
+
       sendJSON = () => sendFetchRequest('/success', 'application/json')
       sendXML = () => sendFetchRequest('/success', 'text/xml');
 
 
       sendButton.addEventListener('click', () => {
-        if (selectType.value === "XML") {
+        if (selectType.value === "text/xml") {
           sendXML();
+          console.log(selectType.value);
         } else {
           sendJSON();
+          console.log(selectType.value);
         }
       });
     };

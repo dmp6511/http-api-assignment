@@ -35,7 +35,6 @@ const getCSS = (request, response) => {
 };
 
 // status messages
-
 // success
 const success = (request, response) => {
   const responseJSON = {
@@ -46,25 +45,77 @@ const success = (request, response) => {
 };
 
 // // bad request, 400 if missing 'valid' query and 200 if it has it
-const badRequest = (request, response) => {
+const badRequest = (request, response, params) => {
   const responseJSON = {
     message: 'this was a bad request',
   };
 
-  respondJSON(request, response, 400, responseJSON);
+  if (!params.valid || params.valid !== 'true') {
+    responseJSON.message = 'missing valid query';
+
+    return respondJSON(request, response, 400, responseJSON);
+  }
+  return respondJSON(request, response, 200, responseJSON);
 };
 
 // unauthorized (401 status code if missing 'loggedIn' query, and 200 if it has it)
+const unauthorized = (request, response, params) => {
+  const responseJSON = {
+    message: 'This request has required parameters',
+  };
 
+  if (!params.valid || params.valid !== 'true') {
+    responseJSON.message = 'missing valid query';
+    responseJSON.id = 'badRequest';
+
+    return respondJSON(request, response, 400, responseJSON);
+  }
+  return respondJSON(request, response, 200, responseJSON);
+};
 // forbidden (403 status code)
+const forbidden = (request, response) => {
+  const responseJSON = {
+    message: 'this is a forbidden request',
+  };
+
+  return respondJSON(request, response, 403, responseJSON);
+};
 
 // internal (500 status code)
+const internal = (request, response) => {
+  const responseJSON = {
+    message: 'this is a internal request',
+  };
+
+  return respondJSON(request, response, 500, responseJSON);
+};
 
 // notImplemented (501 status code)
+const notImplemented = (request, response) => {
+  const responseJSON = {
+    message: 'this request has not been implemented',
+  };
+
+  return respondJSON(request, response, 501, responseJSON);
+};
+
+const notFound = (request, response) => {
+  const responseJSON = {
+    message: 'the page you are looking for could not be found',
+    id: 'notFound',
+  };
+
+  respondJSON(request, response, 404, responseJSON);
+};
 
 module.exports = {
   getIndex,
   success,
   getCSS,
   badRequest,
+  forbidden,
+  internal,
+  notImplemented,
+  unauthorized,
+  notFound,
 };

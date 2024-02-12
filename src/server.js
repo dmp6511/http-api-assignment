@@ -1,6 +1,6 @@
 const http = require('http');
 const url = require('url');
-// const query = require('querystring');
+const query = require('querystring');
 
 // access handlers
 const responseHandler = require('./responses.js');
@@ -14,7 +14,12 @@ const urlStruct = {
   '/style.css': responseHandler.getCSS,
   '/success': responseHandler.success,
   '/badrequest': responseHandler.badRequest,
+  '/unauthorized': responseHandler.unauthorized,
+  '/forbidden': responseHandler.forbidden,
+  '/internal': responseHandler.internal,
+  '/notImplemented': responseHandler.notImplemented,
   index: responseHandler.getIndex,
+  notFound: responseHandler.notFound,
 };
 
 const onRequest = (request, response) => {
@@ -22,13 +27,14 @@ const onRequest = (request, response) => {
   // parse the url
   const parsedUrl = url.parse(request.url);
 
-  const acceptedTypes = request.headers.accept.split(',');
+  // grabbing the queries
+  const params = query.parse(parsedUrl.query);
 
   // check if it matches any of the predetermined page names
   if (urlStruct[parsedUrl.pathname]) {
-    urlStruct[parsedUrl.pathname](request, response, acceptedTypes);
+    urlStruct[parsedUrl.pathname](request, response, params);
   } else {
-    urlStruct.index(request, response, acceptedTypes);
+    urlStruct.notFound(request, response, params);
   }
 };
 
